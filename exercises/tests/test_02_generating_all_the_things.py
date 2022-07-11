@@ -12,11 +12,12 @@ from typing import Optional
 
 import pytest
 from hypothesis import given, strategies as st
- 
+
 # Exercise 1: Write a strategy the generates even integers
 
 # Your code goes here
-@pytest.mark.skip  # Remove this
+#@pytest.mark.skip  # Remove this
+@given(st.integers().filter(lambda x: x % 2 == 0))
 def test_even_integers(i):
     assert i % 2 == 0
 
@@ -25,7 +26,9 @@ def test_even_integers(i):
 # Exercise 2: Write a strategy that generates 2-tuples of integers
 
 # Your code goes here
-@pytest.mark.skip  # Remove this
+@given(
+    st.tuples(st.integers(), st.integers())
+)
 def test_tuples(t):
     assert len(t) == 2
     assert isinstance(t[0], int)
@@ -36,7 +39,9 @@ def test_tuples(t):
 # Exercise 3: Write a strategy that generates 2-tuples of integers, where the second integer is larger than the first
 
 # Your code goes here
-@pytest.mark.skip  # Remove this
+@given(
+    st.tuples(st.integers(), st.integers()).map(sorted).filter(lambda x: x[0] < x[1])
+)
 def test_tuples_with_larger_second_value(t):
     assert len(t) == 2
     assert t[0] < t[1]
@@ -51,7 +56,13 @@ class Container():
 
 
 # Your code goes here
-@pytest.mark.skip  # Remove this
+@given(
+    st.builds(
+        Container,
+        id=st.integers(min_value=1),
+        value=st.text()
+    )
+)
 def test_container(container):
     assert isinstance(container, Container)
     assert isinstance(container.id, int)
@@ -62,12 +73,11 @@ def test_container(container):
 # Exercise 5: If we want to write more tests for the Container type, we will have to copy and paste the strategy all over the place. The goal of this example is to make the strategy reusable for different tests. Write a composite strategy that returns Container objects. The composite strategy should have optional keyword arguments that allows users to override the strategies used to generate Container.id and Container.value. If no strategies for Container.id or Container.value are given, fall back to the defaults.
 
 @st.composite
-def containers(draw, id=None, value=None) -> Container:
+def containers(draw, id=st.integers(min_value=1), value=st.text()) -> Container:
     # Your code goes here
-    ...
+    return draw(st.builds(Container, id=id, value=value))
 
 
-@pytest.mark.skip  # Remove this
 @given(
     containers(id=st.integers(min_value=1))
 )

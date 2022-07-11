@@ -9,9 +9,11 @@ from hypothesis import given, strategies as st
 # Exercise 1: Use Hypothesis to test the `reversed` built-in function for lists
 
 # Your strategy goes here
-def test_reversed():
+@given(st.lists(st.text()))
+def test_reversed(input_list):
   # Your test goes here
-  pytest.skip()
+  #assert list(string) == list(reversed(list(reversed(list(string)))))
+  assert input_list == list(reversed(list(reversed(input_list))))
 
 # Additional test cases go here
 
@@ -20,9 +22,10 @@ def test_reversed():
 # Exercise 2: Use Hypothesis to test the `sorted` built-in function for lists.
 
 # Your strategy goes here
-def test_sorted():
+@given(st.lists(st.text()))
+def test_sorted(input_list):
   # Your test goes here
-  pytest.skip()
+  assert sorted(input_list, reverse=True) == list(reversed(sorted(input_list)))
 
 # Additional test cases go here
 
@@ -31,6 +34,7 @@ def test_sorted():
 # Exercise 3: Use Hypothesis to test the `enumerated` built-in function for lists.
 
 # Your strategy goes here
-def test_enumerated():
+@given(st.lists(st.text(min_size=1), min_size=1))
+def test_enumerated(input_list):
   # Your test goes here
-  pytest.skip()
+  assert (0, input_list[0]) == next(enumerate(input_list))

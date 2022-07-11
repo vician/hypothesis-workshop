@@ -38,30 +38,32 @@ def square(i: int) -> int:
     return i*i
 
 
-@pytest.mark.skip
-def test_square_positive_number():
-    number = 42
+#@pytest.mark.skip
+@given(st.just(42))
+def test_square_positive_number(number):
     result = square(number)
     assert result == 1764
 
 
-@pytest.mark.skip
-def test_square_negative_number():
-    number = -5
+#@pytest.mark.skip
+@given(st.just(-5))
+def test_square_negative_number(number):
     result = square(number)
     assert result == 25
 
 
-@pytest.mark.skip
-def test_square_zero():
-    number = 0
+#@pytest.mark.skip
+@given(st.just(0))
+def test_square_zero(number):
     result = square(number)
     assert result == 0
 
 
-def test_square():
-    pytest.skip()  # Remove this
+@given(st.integers())
+def test_square(number):
+    #pytest.skip()  # Remove this
     # Your code goes here
+    assert square(number) == number * number
 
 
 
@@ -73,9 +75,16 @@ T = TypeVar("T", int, float)
 def square2(i: T) -> T:
     return i*i
 
-def test_square2():
-    pytest.skip()  # Remove this
+@given(
+  st.one_of(
+      st.integers(),
+      st.floats(allow_nan=False),
+    )
+)
+def test_square2(number):
+    #pytest.skip()  # Remove this
     # Your code goes here
+    assert square(number) == number * number
 
 
 
